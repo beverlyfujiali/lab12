@@ -35,7 +35,7 @@ argument list at all but binding to an anonymous function instead.)
 ....................................................................*)
 
 let incr _ =
-  failwith "inc not implemented" ;;
+  failwith "incr not implemented" ;;
 
 (*....................................................................
 Exercise 3: Write a function `remember` that returns the last string
@@ -165,57 +165,35 @@ mutable list and a second mutable list and, as a side effect, causes
 the first to become the appending of the two lists. Some questions to
 think about before you get started:
 
- o What is an appropriate return type for the `mappend` function? (You
-   can glean our intended answer from the examples below, but try to
-   think it through yourself first.
-#ifdef SOLN
+ 1. What is an appropriate return type for the `mappend` function?
+    (You can glean our intended answer from the examples below, but
+    try to think it through yourself first.
 
-      ANSWER: Since `mappend` is called for its side effect, `unit` is
-      the appropriate return type. An alternative would be to return
-      some indication as to whether the appending succeeded -- since
-      it could fail if the first argument is `Nil` -- perhaps as an
-      option type or boolean.
-#endif
+ 2. Why is there a restriction that the first list be non-empty?
 
- o Why is there a restriction that the first list be non-empty?
-#ifdef SOLN
-
-      ANSWER: The `mlist` type only allows tails of lists to be
-      mutated, so there is no way to mutate the empty list, and
-      therefore no way to append to it.
-#endif
-
- o What is the appropriate thing to do if `mappend` is called with an
-   empty mutable list as first argument?
-#ifdef SOLN
-
-      ANSWER: The return type of the function is `unit`, so there are
-      only two options: return `()` or raise an exception. The
-      latter is a better choice, since an empty first argument is
-      undoubtedly a sign of the code having gone wrong. We show both
-      implementations below.
-#endif
+ 3. What is the appropriate thing to do if `mappend` is called with an
+    empty mutable list as first argument?
 
 Examples of use:
 
-    # let m1 = mlist_of_list [1; 2; 3];;
+    # let m1 = mlist_of_list [1; 2; 3] ;;
     val m1 : int mlist =
       Cons (1, {contents = Cons (2, {contents = Cons (3, {contents = Nil})})})
 
-    # let m2 = mlist_of_list [4; 5; 6];;
+    # let m2 = mlist_of_list [4; 5; 6] ;;
     val m2 : int mlist =
       Cons (4, {contents = Cons (5, {contents = Cons (6, {contents = Nil})})})
 
-    # length m1;;
+    # length m1 ;;
     - : int = 3
 
-    # mappend m1 m2;;
+    # mappend m1 m2 ;;
     - : unit = ()
 
-    # length m1;;
+    # length m1 ;;
     - : int = 6
 
-    # m1;;
+    # m1 ;;
     - : int mlist =
     Cons (1,
      {contents =
@@ -297,13 +275,13 @@ the `to_string` function. (Read on below for an example of the use of
 the functor.)
 ....................................................................*)
 
-module MakeImpQueue (A : sig
-                           type t
-                           val to_string : t -> string
-                         end)
-                  : (IMP_QUEUE with type elt = A.t) =
+module MakeImpQueue (Elt : sig
+                             type t
+                             val to_string : t -> string
+                           end)
+                  : (IMP_QUEUE with type elt = Elt.t) =
   struct
-    type elt = A.t
+    type elt = Elt.t
     type mlist = Nil | Cons of elt * (mlist ref)
     type queue = {front: mlist ref ; rear: mlist ref}
 
