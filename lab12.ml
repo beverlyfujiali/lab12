@@ -26,6 +26,7 @@ should the type for the function as a whole be?
 working on this lab outside of lab times, check
 <https://url.cs51.io/lab12-1> for our answer, which you should keep to
 in the next exercise. *)
+	
 (*....................................................................
 Exercise 2: Now implement the `incr` function. (As usual, for this and
 succeeding exercises, you shouldn't feel beholden to how the
@@ -49,7 +50,7 @@ the empty string.
     # remember "etaoin shrdlu" ;;
     - : string = "what was that again?"
 
-(This is probably the least functional function ever written!)
+(This is probably the least "functional" function ever written!)
 
 As usual, you shouldn't feel beholden to how the definition is
 introduced in the skeleton code below.
@@ -76,7 +77,7 @@ OCaml.)
 
 The `gensym` function takes a string and generates a new string by
 suffixing a unique number, which is initially 0 but is incremented
-each time gensym is called.
+each time `gensym` is called.
 
 For example,
 
@@ -155,9 +156,21 @@ let length (mlst : 'a mlist) : int =
 
 (*....................................................................
 Exercise 7: What is the time complexity of the `length` function in
-O() notation in terms of the length of its list argument?
+terms of the length of its list argument? Provide the tightest
+complexity class, recorded using the technique from lab 10.
 ....................................................................*)
 
+type complexity =
+  | Unanswered
+  | Constant
+  | Logarithmic
+  | Linear
+  | LogLinear
+  | Quadratic
+  | Cubic
+  | Exponential ;;
+  
+let length_complexity : complexity = Unanswered ;;
 
 (*....................................................................
 Exercise 8: Now, define a function `mappend` that takes a *non-empty*
@@ -167,7 +180,7 @@ think about before you get started:
 
  1. What is an appropriate return type for the `mappend` function?
     (You can glean our intended answer from the examples below, but
-    try to think it through yourself first.
+    try to think it through yourself first.)
 
  2. Why is there a restriction that the first list be non-empty?
 
@@ -178,11 +191,13 @@ Examples of use:
 
     # let m1 = mlist_of_list [1; 2; 3] ;;
     val m1 : int mlist =
-      Cons (1, {contents = Cons (2, {contents = Cons (3, {contents = Nil})})})
+      Cons (1, 
+       {contents = Cons (2, {contents = Cons (3, {contents = Nil})})})
 
     # let m2 = mlist_of_list [4; 5; 6] ;;
     val m2 : int mlist =
-      Cons (4, {contents = Cons (5, {contents = Cons (6, {contents = Nil})})})
+      Cons (4,
+       {contents = Cons (5, {contents = Cons (6, {contents = Nil})})})
 
     # length m1 ;;
     - : int = 3
@@ -202,7 +217,9 @@ Examples of use:
           Cons (3,
            {contents =
              Cons (4,
-              {contents = Cons (5, {contents = Cons (6, {contents = Nil})})})})})})
+              {contents = 
+                Cons (5,
+                 {contents = Cons (6, {contents = Nil})})})})})})
 ....................................................................*)
 
 let mappend _ =
@@ -283,7 +300,7 @@ module MakeImpQueue (Elt : sig
   struct
     type elt = Elt.t
     type mlist = Nil | Cons of elt * (mlist ref)
-    type queue = {front: mlist ref ; rear: mlist ref}
+    type queue = {front: mlist ref; rear: mlist ref}
 
     let empty () = {front = ref Nil; rear = ref Nil}
     let enq x q =
